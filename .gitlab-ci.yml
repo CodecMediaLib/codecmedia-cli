@@ -1,0 +1,52 @@
+image: maven:3.9.9-eclipse-temurin-17
+
+stages:
+  - verify
+  - release
+
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository"
+  MAVEN_CLI_OPTS: "--batch-mode --no-transfer-progress --errors"
+
+cache:
+  key: "${CI_PROJECT_ID}"
+  paths:
+    - .m2/repository
+
+verify:
+  stage: verify
+  script:
+    - mvn ${MAVEN_CLI_OPTS} -Dgpg.skip=true clean verify
+  artifacts:
+    when: always
+    expire_in: 7 days
+    paths:
+      - target/
+  rules:
+    - if: $CI_COMMIT_TAG
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH
+
+release-central:
+  stage: release
+  before_script:
+    - mkdir -p ~/.m2
+    - |
+      cat > ~/.m2/settings.xml <<EOF
+      <settings xmlns="http://maven.apache.org/SETTINGS/1.2.0"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.2.0 https://maven.apache.org/xsd/settings-1.2.0.xsd">
+        <servers>
+          <server>
+            <id>central</id>
+            <username>${CENTRAL_USERNAME}</username>
+            <password>${CENTRAL_PASSWORD}</password>
+          </server>
+        </servers>
+      </settings>
+      EOF
+    - echo "$GPG_PRIVATE_KEY" | gpg --batch --import
+  script:
+    - mvn ${MAVEN_CLI_OPTS} -Dgpg.passphrase="$GPG_PASSPHRASE" clean deploy
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+(-.*)?$/'
