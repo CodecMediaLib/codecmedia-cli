@@ -1,48 +1,23 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
-         http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>me.tamkungz.codecmedia</groupId>
   <artifactId>codecmedia-cli</artifactId>
-  <version>1.0.2</version>
-  <packaging>jar</packaging>
-
   <name>CodecMedia CLI</name>
-  <description>
-    Command-line interface for CodecMedia (Java).
+  <version>1.0.2</version>
+  <description>Command-line interface for CodecMedia (Java).
     Provides probing, validation, metadata sidecar, audio extraction, playback workflow simulation,
-    and conversion routing via CLI.
-  </description>
+    and conversion routing via CLI.</description>
   <url>https://codecmedia.tamkungz.me/</url>
-
-  <organization>
-    <name>TamKungZ_</name>
-    <url>https://www.tamkungz.me/</url>
-  </organization>
-
-  <inceptionYear>2026</inceptionYear>
-
   <issueManagement>
     <system>GitLab Issues</system>
     <url>https://gitlab.com/TamKungZ/codecmedia-cli/-/issues</url>
   </issueManagement>
-
   <ciManagement>
     <system>GitLab CI</system>
     <url>https://gitlab.com/TamKungZ/codecmedia-cli/-/pipelines</url>
   </ciManagement>
-
-  <licenses>
-    <license>
-      <name>Apache License 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
-
+  <inceptionYear>2026</inceptionYear>
   <developers>
     <developer>
       <id>tamkungz</id>
@@ -56,74 +31,39 @@
       <timezone>Asia/Bangkok</timezone>
     </developer>
   </developers>
-
+  <licenses>
+    <license>
+      <name>Apache License 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
   <scm>
     <connection>scm:git:git://gitlab.com/TamKungZ/codecmedia-cli.git</connection>
     <developerConnection>scm:git:ssh://git@gitlab.com/TamKungZ/codecmedia-cli.git</developerConnection>
     <url>https://gitlab.com/TamKungZ/codecmedia-cli</url>
   </scm>
-
-  <distributionManagement>
-    <repository>
-      <id>central</id>
-      <url>https://central.sonatype.com/api/v1/publisher</url>
-    </repository>
-  </distributionManagement>
-
-  <properties>
-    <maven.compiler.release>17</maven.compiler.release>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.outputTimestamp>${maven.build.timestamp}</project.build.outputTimestamp>
-    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
-
-    <gpg.keyname>7311416EAA9848E4</gpg.keyname>
-
-    <project.logo.url>https://codecmedia.tamkungz.me/CodecMedia_Icon_Logo.png</project.logo.url>
-    <project.full.logo.url>https://codecmedia.tamkungz.me/CodecMedia_Full_Logo.png</project.full.logo.url>
-
-    <mainClass>me.tamkungz.codecmedia.CodecMediaCli</mainClass>
-
-    <junit.version>6.0.2</junit.version>
-  </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>me.tamkungz.codecmedia</groupId>
-      <artifactId>codecmedia</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.junit.jupiter</groupId>
-      <artifactId>junit-jupiter</artifactId>
-      <version>${junit.version}</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-
+  <organization>
+    <name>TamKungZ_</name>
+    <url>https://www.tamkungz.me/</url>
+  </organization>
   <build>
     <plugins>
-
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <version>3.15.0</version>
         <configuration>
           <release>${maven.compiler.release}</release>
         </configuration>
       </plugin>
-
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.5.5</version>
         <configuration>
           <useModulePath>false</useModulePath>
         </configuration>
       </plugin>
-
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <version>3.5.0</version>
         <configuration>
@@ -141,9 +81,7 @@
           </archive>
         </configuration>
       </plugin>
-
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
         <version>3.6.0</version>
         <executions>
@@ -156,20 +94,17 @@
               <createDependencyReducedPom>true</createDependencyReducedPom>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>all</shadedClassifierName>
-
               <transformers>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                <transformer>
                   <mainClass>${mainClass}</mainClass>
                 </transformer>
-                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                <transformer />
               </transformers>
             </configuration>
           </execution>
         </executions>
       </plugin>
-
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-source-plugin</artifactId>
         <version>3.4.0</version>
         <executions>
@@ -182,14 +117,9 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
         <version>3.12.0</version>
-        <configuration>
-          <doclint>none</doclint>
-        </configuration>
         <executions>
           <execution>
             <id>attach-javadocs</id>
@@ -199,10 +129,11 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <doclint>none</doclint>
+        </configuration>
       </plugin>
-
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
         <version>3.2.8</version>
         <executions>
@@ -215,15 +146,51 @@
           </execution>
         </executions>
       </plugin>
-
       <plugin>
         <groupId>org.sonatype.central</groupId>
         <artifactId>central-publishing-maven-plugin</artifactId>
         <version>0.10.0</version>
         <extensions>true</extensions>
       </plugin>
-
     </plugins>
   </build>
-
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>6.0.2</version>
+      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <artifactId>junit-jupiter-api</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-jupiter-params</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>junit-jupiter-engine</artifactId>
+          <groupId>org.junit.jupiter</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+  </dependencies>
+  <distributionManagement>
+    <repository>
+      <id>central</id>
+      <url>https://central.sonatype.com/api/v1/publisher</url>
+    </repository>
+  </distributionManagement>
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <mainClass>me.tamkungz.codecmedia.CodecMediaCli</mainClass>
+    <gpg.keyname>7311416EAA9848E4</gpg.keyname>
+    <project.logo.url>https://codecmedia.tamkungz.me/CodecMedia_Icon_Logo.png</project.logo.url>
+    <maven.build.timestamp.format>yyyy-MM-dd'T'HH:mm:ss'Z'</maven.build.timestamp.format>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.build.outputTimestamp>${maven.build.timestamp}</project.build.outputTimestamp>
+    <junit.version>6.0.2</junit.version>
+    <project.full.logo.url>https://codecmedia.tamkungz.me/CodecMedia_Full_Logo.png</project.full.logo.url>
+  </properties>
 </project>

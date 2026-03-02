@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
+
 import me.tamkungz.codecmedia.model.ConversionResult;
 import me.tamkungz.codecmedia.model.ExtractionResult;
 import me.tamkungz.codecmedia.model.PlaybackResult;
@@ -134,7 +135,7 @@ public final class CodecMediaCli {
         Path input = Path.of(args[1]);
         Path outputDir = Path.of(args[2]);
 
-        String format = "m4a";
+        String format = extensionOf(input);
         Integer bitrate = 192;
         Integer stream = 0;
 
@@ -146,6 +147,10 @@ public final class CodecMediaCli {
                 case "--stream" -> stream = parseInt(requiredValue(args, ++i, "--stream requires a value"), "--stream");
                 default -> throw new IllegalArgumentException("Unknown option for extract-audio: " + arg);
             }
+        }
+
+        if (format == null || format.isBlank()) {
+            throw new IllegalArgumentException("Target format missing; provide --format or input extension");
         }
 
         ExtractionResult result = engine.extractAudio(input, outputDir, new AudioExtractOptions(format, bitrate, stream));
