@@ -6,11 +6,12 @@ Command-line interface for CodecMedia, providing media probing, validation, side
 
 Core library: **codecmedia**  
 Website: https://codecmedia.tamkungz.me/  
-Repository: https://github.com/TamKungZ/codecmedia-java
+Repository: https://github.com/CodecMediaLib/codecmedia-java
 
 ## Project repository
 
-GitLab: https://gitlab.com/TamKungZ/codecmedia-cli
+GitHub: https://github.com/CodecMediaLib/codecmedia-cli
+SSH: git@github.com:CodecMediaLib/codecmedia-cli.git
 
 ## Build
 

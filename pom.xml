@@ -7,7 +7,7 @@
 
   <groupId>me.tamkungz.codecmedia</groupId>
   <artifactId>codecmedia-cli</artifactId>
-  <version>1.0.3</version>
+  <version>1.1.0</version>
   <packaging>jar</packaging>
 
   <name>CodecMedia CLI</name>
@@ -19,20 +19,20 @@
   <url>https://codecmedia.tamkungz.me/</url>
 
   <organization>
-    <name>TamKungZ_</name>
-    <url>https://www.tamkungz.me/</url>
+    <name>CodecMediaLib</name>
+    <url>https://github.com/CodecMediaLib</url>
   </organization>
 
   <inceptionYear>2026</inceptionYear>
 
   <issueManagement>
-    <system>GitLab Issues</system>
-    <url>https://gitlab.com/TamKungZ/codecmedia-cli/-/issues</url>
+    <system>GitHub Issues</system>
+    <url>https://github.com/CodecMediaLib/codecmedia-cli/issues</url>
   </issueManagement>
 
   <ciManagement>
-    <system>GitLab CI</system>
-    <url>https://gitlab.com/TamKungZ/codecmedia-cli/-/pipelines</url>
+    <system>GitHub Actions</system>
+    <url>https://github.com/CodecMediaLib/codecmedia-cli/actions</url>
   </ciManagement>
 
   <licenses>
@@ -58,9 +58,9 @@
   </developers>
 
   <scm>
-    <connection>scm:git:git://gitlab.com/TamKungZ/codecmedia-cli.git</connection>
-    <developerConnection>scm:git:ssh://git@gitlab.com/TamKungZ/codecmedia-cli.git</developerConnection>
-    <url>https://gitlab.com/TamKungZ/codecmedia-cli</url>
+    <connection>scm:git:git://github.com/CodecMediaLib/codecmedia-cli.git</connection>
+    <developerConnection>scm:git:ssh://github.com:CodecMediaLib/codecmedia-cli.git</developerConnection>
+    <url>https://github.com/CodecMediaLib/codecmedia-cli</url>
   </scm>
 
   <distributionManagement>
@@ -90,7 +90,7 @@
     <dependency>
       <groupId>me.tamkungz.codecmedia</groupId>
       <artifactId>codecmedia</artifactId>
-      <version>1.0.2</version>
+      <version>1.1.0</version>
     </dependency>
 
     <dependency>
