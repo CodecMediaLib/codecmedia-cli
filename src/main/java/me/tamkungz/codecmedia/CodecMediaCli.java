@@ -2,6 +2,8 @@ package me.tamkungz.codecmedia;
 
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -36,6 +38,13 @@ import me.tamkungz.codecmedia.options.ValidationOptions;
  * </pre>
  */
 public final class CodecMediaCli {
+
+    @FunctionalInterface
+    private interface CommandHandler {
+        int handle(CodecMediaEngine engine, String[] args, PrintStream out) throws CodecMediaException;
+    }
+
+    private static final Map<String, CommandHandler> COMMANDS = createCommands();
 
     private CodecMediaCli() {
     }
@@ -83,21 +92,13 @@ public final class CodecMediaCli {
             String command = args[0].toLowerCase(Locale.ROOT);
             CodecMediaEngine engine = CodecMedia.createDefault();
 
-            return switch (command) {
-                case "get" -> handleGet(engine, args, out);
-                case "probe" -> handleProbe(engine, args, out);
-                case "validate" -> handleValidate(engine, args, out);
-                case "convert" -> handleConvert(engine, args, out);
-                case "extract-audio" -> handleExtractAudio(engine, args, out);
-                case "play" -> handlePlay(engine, args, out);
-                case "read-metadata" -> handleReadMetadata(engine, args, out);
-                case "write-metadata" -> handleWriteMetadata(engine, args, out);
-                default -> {
-                    err.println("Unknown command: " + command);
-                    printUsage(err);
-                    yield 2;
-                }
-            };
+            CommandHandler handler = COMMANDS.get(command);
+            if (handler == null) {
+                err.println("Unknown command: " + command);
+                printUsage(err);
+                return 2;
+            }
+            return handler.handle(engine, args, out);
         } catch (IllegalArgumentException ex) {
             err.println("Invalid arguments: " + ex.getMessage());
             return 2;
@@ -108,6 +109,19 @@ public final class CodecMediaCli {
             err.println("Unexpected error: " + ex.getMessage());
             return 1;
         }
+    }
+
+    private static Map<String, CommandHandler> createCommands() {
+        Map<String, CommandHandler> handlers = new HashMap<>();
+        handlers.put("get", CodecMediaCli::handleGet);
+        handlers.put("probe", CodecMediaCli::handleProbe);
+        handlers.put("validate", CodecMediaCli::handleValidate);
+        handlers.put("convert", CodecMediaCli::handleConvert);
+        handlers.put("extract-audio", CodecMediaCli::handleExtractAudio);
+        handlers.put("play", CodecMediaCli::handlePlay);
+        handlers.put("read-metadata", CodecMediaCli::handleReadMetadata);
+        handlers.put("write-metadata", CodecMediaCli::handleWriteMetadata);
+        return Collections.unmodifiableMap(handlers);
     }
 
     /**
