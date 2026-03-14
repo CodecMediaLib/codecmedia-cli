@@ -412,6 +412,9 @@ public final class CodecMediaCli {
             if (key.isBlank()) {
                 throw new IllegalArgumentException("Entry key must not be blank");
             }
+            if (value.isBlank()) {
+                throw new IllegalArgumentException("Entry value must not be blank");
+            }
             entries.put(key, value);
         }
 
@@ -439,8 +442,22 @@ public final class CodecMediaCli {
         out.println("extension=" + result.extension());
         out.println("mediaType=" + result.mediaType());
         out.println("durationMillis=" + result.durationMillis());
-        out.println("streams=" + result.streams());
-        out.println("tags=" + result.tags());
+
+        var streams = result.streams();
+        out.println("streams.count=" + streams.size());
+        for (int i = 0; i < streams.size(); i++) {
+            out.println("streams[" + i + "]=" + streams.get(i));
+        }
+
+        var tags = result.tags();
+        if (tags == null || tags.isEmpty()) {
+            out.println("tags.count=0");
+        } else {
+            out.println("tags.count=" + tags.size());
+            tags.entrySet().stream()
+                    .sorted(Map.Entry.comparingByKey())
+                    .forEach(entry -> out.println("tags." + entry.getKey() + "=" + entry.getValue()));
+        }
     }
 
     /**

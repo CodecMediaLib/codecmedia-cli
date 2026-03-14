@@ -77,6 +77,14 @@ class CodecMediaCliTest {
     }
 
     @Test
+    void shouldReturnCode2WhenWriteMetadataEntryValueBlank() {
+        RunResult result = runCli(new String[] {"write-metadata", "in.mp3", "--entry", "artist=   "});
+
+        assertEquals(2, result.code());
+        assertTrue(result.err().contains("Entry value must not be blank"));
+    }
+
+    @Test
     void shouldReturnCode2WhenPlayHasUnknownOption() {
         RunResult result = runCli(new String[] {"play", "song.mp3", "--nope"});
 
