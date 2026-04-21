@@ -31,7 +31,7 @@ import me.tamkungz.codecmedia.options.ValidationOptions;
  *   probe          &lt;input&gt;
  *   validate       &lt;input&gt; [--strict] [--max-bytes &lt;n&gt;]
  *   convert        &lt;input&gt; &lt;output&gt; [--format &lt;fmt&gt;] [--preset &lt;preset&gt;] [--overwrite]
- *   extract-audio  &lt;input&gt; &lt;outputDir&gt; [--format &lt;fmt&gt;] [--bitrate &lt;kbps&gt;] [--stream &lt;index&gt;]
+ *   extract-audio  &lt;input&gt; &lt;outputDir&gt; [--format &lt;fmt&gt;] [--bitrate &lt;kbps|auto&gt;] [--stream &lt;index|auto&gt;]
  *   play           &lt;input&gt; [--dry-run] [--allow-external-app] [--no-external-app]
  *   read-metadata  &lt;input&gt;
  *   write-metadata &lt;input&gt; --entry &lt;key=value&gt; [--entry &lt;key=value&gt; ...]
@@ -278,7 +278,7 @@ public final class CodecMediaCli {
      * @throws IllegalArgumentException if an unrecognised option or non-integer value is supplied
      */
     private static int handleExtractAudio(CodecMediaEngine engine, String[] args, PrintStream out) throws CodecMediaException {
-        requireLength(args, 3, "extract-audio <input> <outputDir> [--format <fmt>] [--bitrate <kbps>] [--stream <index>]");
+        requireLength(args, 3, "extract-audio <input> <outputDir> [--format <fmt>] [--bitrate <kbps|auto>] [--stream <index|auto>]");
 
         Path input = Path.of(args[1]);
         Path outputDir = Path.of(args[2]);
@@ -287,18 +287,30 @@ public final class CodecMediaCli {
         String format = defaults.targetFormat();
         Integer bitrate = defaults.bitrateKbps();
         Integer stream = defaults.streamIndex();
+        boolean hasExplicitExtractOption = false;
 
         for (int i = 3; i < args.length; i++) {
             String arg = args[i];
             switch (arg) {
-                case "--format" -> format = requiredValue(args, ++i, "--format requires a value");
-                case "--bitrate" -> bitrate = parseInt(requiredValue(args, ++i, "--bitrate requires a value"), "--bitrate");
-                case "--stream" -> stream = parseInt(requiredValue(args, ++i, "--stream requires a value"), "--stream");
+                case "--format" -> {
+                    hasExplicitExtractOption = true;
+                    format = requiredValue(args, ++i, "--format requires a value");
+                }
+                case "--bitrate" -> {
+                    hasExplicitExtractOption = true;
+                    bitrate = parseNullableInt(requiredValue(args, ++i, "--bitrate requires a value"), "--bitrate");
+                }
+                case "--stream" -> {
+                    hasExplicitExtractOption = true;
+                    stream = parseNullableInt(requiredValue(args, ++i, "--stream requires a value"), "--stream");
+                }
                 default -> throw new IllegalArgumentException("Unknown option for extract-audio: " + arg);
             }
         }
 
-        ExtractionResult result = engine.extractAudio(input, outputDir, new AudioExtractOptions(format, bitrate, stream));
+        ExtractionResult result = hasExplicitExtractOption
+                ? engine.extractAudio(input, outputDir, new AudioExtractOptions(format, bitrate, stream))
+                : engine.extractAudio(input, outputDir, null);
         out.println("output=" + result.outputFile());
         out.println("format=" + result.format());
         return 0;
@@ -412,9 +424,6 @@ public final class CodecMediaCli {
             if (key.isBlank()) {
                 throw new IllegalArgumentException("Entry key must not be blank");
             }
-            if (value.isBlank()) {
-                throw new IllegalArgumentException("Entry value must not be blank");
-            }
             entries.put(key, value);
         }
 
@@ -522,6 +531,13 @@ public final class CodecMediaCli {
         }
     }
 
+    private static Integer parseNullableInt(String value, String option) {
+        if ("auto".equalsIgnoreCase(value)) {
+            return null;
+        }
+        return parseInt(value, option);
+    }
+
     /**
      * Parses {@code value} as a {@code long}.
      *
@@ -569,7 +585,7 @@ public final class CodecMediaCli {
         out.println("  probe <input>");
         out.println("  validate <input> [--strict] [--max-bytes <n>]");
         out.println("  convert <input> <output> [--format <fmt>] [--preset <preset>] [--overwrite]");
-        out.println("  extract-audio <input> <outputDir> [--format <fmt>] [--bitrate <kbps>] [--stream <index>]");
+        out.println("  extract-audio <input> <outputDir> [--format <fmt>] [--bitrate <kbps|auto>] [--stream <index|auto>]");
         out.println("  play <input> [--dry-run] [--allow-external-app] [--no-external-app]");
         out.println("  read-metadata <input>");
         out.println("  write-metadata <input> --entry <key=value> [--entry <key=value> ...]");

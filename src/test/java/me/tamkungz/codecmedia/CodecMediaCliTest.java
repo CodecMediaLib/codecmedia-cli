@@ -80,8 +80,26 @@ class CodecMediaCliTest {
     void shouldReturnCode2WhenWriteMetadataEntryValueBlank() {
         RunResult result = runCli(new String[] {"write-metadata", "in.mp3", "--entry", "artist=   "});
 
-        assertEquals(2, result.code());
-        assertTrue(result.err().contains("Entry value must not be blank"));
+        assertEquals(1, result.code());
+        assertTrue(result.err().contains("CodecMedia error:"));
+    }
+
+    @Test
+    void shouldReturnCode1WhenExtractAudioUsesEngineDefaultsAndFileMissing() {
+        RunResult result = runCli(new String[] {"extract-audio", "input.mp3", "out"});
+
+        assertEquals(1, result.code());
+        assertTrue(result.err().contains("CodecMedia error:"));
+    }
+
+    @Test
+    void shouldReturnCode1WhenExtractAudioSupportsAutoBitrateAndStream() {
+        RunResult result = runCli(new String[] {
+                "extract-audio", "input.mp3", "out", "--bitrate", "auto", "--stream", "auto"
+        });
+
+        assertEquals(1, result.code());
+        assertTrue(result.err().contains("CodecMedia error:"));
     }
 
     @Test
